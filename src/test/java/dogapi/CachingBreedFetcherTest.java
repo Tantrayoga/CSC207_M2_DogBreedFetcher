@@ -49,7 +49,7 @@ class CachingBreedFetcherTest {
 
         assertEquals(1, cachingFetcher.getCallsMade(),
                 "Fetcher should only be called once due to caching. " +
-                "Make sure that your implementation is recording how many calls have been made!");
+                        "Make sure that your implementation is recording how many calls have been made!");
     }
 
     @Test
@@ -60,7 +60,7 @@ class CachingBreedFetcherTest {
         assertThrows(BreedFetcher.BreedNotFoundException.class, () -> cachingFetcher.getSubBreeds("dragon"));
         assertEquals(1, cachingFetcher.getCallsMade(),
                 "Fetcher should be called even if breed is invalid. " +
-                "Make sure that your implementation is recording how many calls have been made!");
+                        "Make sure that your implementation is recording how many calls have been made!");
     }
 
     @Test
@@ -72,6 +72,6 @@ class CachingBreedFetcherTest {
         assertThrows(BreedFetcher.BreedNotFoundException.class, () -> cachingFetcher.getSubBreeds("dragon"));
         assertEquals(2, cachingFetcher.getCallsMade(),
                 "Fetcher should be called again even if breed is invalid. " +
-                "Make sure that your implementation is recording how many calls have been made!");
+                        "Make sure that your implementation is recording how many calls have been made!");
     }
 }

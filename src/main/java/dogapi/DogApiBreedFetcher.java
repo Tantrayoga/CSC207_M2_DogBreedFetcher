@@ -24,12 +24,52 @@ public class DogApiBreedFetcher implements BreedFetcher {
      * @throws BreedNotFoundException if the breed does not exist (or if the API call fails for any reason)
      */
     @Override
-    public List<String> getSubBreeds(String breed) {
-        // TODO Task 1: Complete this method based on its provided documentation
-        //      and the documentation for the dog.ceo API. You may find it helpful
-        //      to refer to the examples of using OkHttpClient from the last lab,
-        //      as well as the code for parsing JSON responses.
-        // return statement included so that the starter code can compile and run.
-        return new ArrayList<>();
+    public List<String> getSubBreeds(String breed) throws BreedNotFoundException {
+
+        if (breed == null || breed.trim().isEmpty()) {
+            throw new BreedNotFoundException("Breed must be non-empty");
+        }
+
+        final String normalized = breed.trim().toLowerCase(Locale.ROOT);
+        final String url;
+        try {
+            url = "https://dog.ceo/api/breed/"
+                    + java.net.URLEncoder.encode(normalized, java.nio.charset.StandardCharsets.UTF_8.name())
+                    + "/list";
+        } catch (Exception e) {
+            throw new BreedNotFoundException("Failed to encode breed name", e);
+        }
+
+        Request request = new Request.Builder().url(url).build();
+
+        try (Response resp = client.newCall(request).execute()) {
+            if (!resp.isSuccessful() || resp.body() == null) {
+                throw new BreedNotFoundException("API call failed with HTTP " + resp.code());
+            }
+
+            String body = resp.body().string();
+            JSONObject json = new JSONObject(body);
+            String status = json.optString("status", "error");
+
+            if ("error".equalsIgnoreCase(status)) {
+                String msg = json.optString("message", "Breed not found");
+                throw new BreedNotFoundException(msg);
+            }
+
+            JSONArray arr = json.optJSONArray("message");
+            if (arr == null) {
+                throw new BreedNotFoundException("Unexpected API response shape");
+            }
+
+            List<String> subBreeds = new ArrayList<>(arr.length());
+            for (int i = 0; i < arr.length(); i++) {
+                subBreeds.add(arr.getString(i));
+            }
+            return subBreeds;
+        } catch (BreedNotFoundException e) {
+            throw e;
+        } catch (IOException | org.json.JSONException e) {
+            throw new BreedNotFoundException("Failed to fetch sub-breeds", e);
+        }
     }
 }

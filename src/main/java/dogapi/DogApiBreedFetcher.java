@@ -36,7 +36,6 @@ public class DogApiBreedFetcher implements BreedFetcher {
                     + java.net.URLEncoder.encode(normalized, java.nio.charset.StandardCharsets.UTF_8.name())
                     + "/list";
         } catch (Exception e) {
-            // (Extremely rare) encoding issue
             throw new BreedNotFoundException("Failed to encode breed name", e);
         }
 
@@ -67,9 +66,8 @@ public class DogApiBreedFetcher implements BreedFetcher {
             }
             return subBreeds;
         } catch (BreedNotFoundException e) {
-            throw e; // keep the exact exception type per assignment contract
+            throw e;
         } catch (IOException | org.json.JSONException e) {
-            // Convert any IO/JSON failure to the required exception type
             throw new BreedNotFoundException("Failed to fetch sub-breeds", e);
         }
     }

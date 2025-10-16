@@ -25,6 +25,7 @@ public class DogApiBreedFetcher implements BreedFetcher {
      */
     @Override
     public List<String> getSubBreeds(String breed) throws BreedNotFoundException {
+
         if (breed == null || breed.trim().isEmpty()) {
             throw new BreedNotFoundException("Breed must be non-empty");
         }

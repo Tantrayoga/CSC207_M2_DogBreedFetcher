@@ -19,15 +19,12 @@ public interface BreedFetcher {
         public BreedNotFoundException(String breed) {
             super("Breed not found: " + breed);
         }
-
         public BreedNotFoundException() {
             super("Breed not found");
         }
-
         public BreedNotFoundException(String message, Throwable cause) {
             super(message, cause);
         }
-
         public BreedNotFoundException(Throwable cause) {
             super(cause);
         }
